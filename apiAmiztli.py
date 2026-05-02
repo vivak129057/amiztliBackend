@@ -1,14 +1,14 @@
 import os
+if os.path.exists('.env'):
+    from dotenv import load_dotenv
+    load_dotenv()
 import cloudinary
 import cloudinary.uploader
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import mysql.connector
 from werkzeug.utils import secure_filename
-from dotenv import load_dotenv
 
-# Carga las variables del archivo .env (útil para pruebas en tu computadora local)
-load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
