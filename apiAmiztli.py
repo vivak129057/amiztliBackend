@@ -25,12 +25,14 @@ os.makedirs(CARPETA_DESTINO, exist_ok=True)
 
 # Configuración dinámica para conectarse a Railway
 db_config = {
-    'host': os.getenv('MYSQLHOST'),
-    'user': os.getenv('MYSQLUSER', 'root'),
-    'password': os.getenv('MYSQLPASSWORD'),
-    'database': os.getenv('MYSQLDATABASE', 'railway'),
-    'port': int(os.getenv('MYSQLPORT', '41389'))
+    # Configuración temporal para probar si conecta correctamente a Railway
+    'host': 'switchyard.proxy.rlwy.net', # Pega aquí tu host entre comillas
+    'user': 'root',
+    'password': 'dwKDlGMShcbQGLDywxxEdsQlnyKqrUzq', # Pega aquí tu contraseña
+    'database': 'railway',
+    'port': 41389 # Asegúrate de usar el puerto numérico correcto
 }
+
 
 @app.route('/api/materiales_educativos', methods=['POST'])
 def subir_material():
