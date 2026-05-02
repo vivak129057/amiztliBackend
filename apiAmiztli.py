@@ -15,9 +15,9 @@ CORS(app)
 
 # Configuración de Cloudinary utilizando variables de entorno
 cloudinary.config(
-    cloud_name="dvocywp3g",
-    api_key="697285456284546",
-    api_secret="CBnGpPh1slkKmyZwroGodH3PKUY"
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
 
 CARPETA_DESTINO = 'uploads'
@@ -25,14 +25,12 @@ os.makedirs(CARPETA_DESTINO, exist_ok=True)
 
 # Configuración dinámica para conectarse a Railway
 db_config = {
-    # Configuración temporal para probar si conecta correctamente a Railway
-    'host': 'switchyard.proxy.rlwy.net', # Pega aquí tu host entre comillas
-    'user': 'root',
-    'password': 'dwKDlGMShcbQGLDywxxEdsQlnyKqrUzq', # Pega aquí tu contraseña
-    'database': 'railway',
-    'port': 41389 # Asegúrate de usar el puerto numérico correcto
+    'host': os.getenv('MYSQLHOST'),
+    'user': os.getenv('MYSQLUSER', 'root'),
+    'password': os.getenv('MYSQLPASSWORD'),
+    'database': os.getenv('MYSQLDATABASE', 'railway'),
+    'port': int(os.getenv('MYSQLPORT', '41389'))
 }
-
 
 @app.route('/api/materiales_educativos', methods=['POST'])
 def subir_material():
