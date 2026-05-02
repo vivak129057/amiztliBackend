@@ -13,23 +13,20 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 CORS(app)
 
-# Configuración de Cloudinary utilizando variables de entorno
+# Configuración de Cloudinary leyendo directo de las variables de entorno
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key=os.getenv("CLOUDINARY_API_KEY"),
     api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
 
-CARPETA_DESTINO = 'uploads'
-os.makedirs(CARPETA_DESTINO, exist_ok=True)
-
-# Configuración dinámica para conectarse a Railway
+# Configuración de la base de datos
 db_config = {
     'host': os.getenv('MYSQLHOST'),
     'user': os.getenv('MYSQLUSER', 'root'),
     'password': os.getenv('MYSQLPASSWORD'),
     'database': os.getenv('MYSQLDATABASE', 'railway'),
-    'port': int(os.getenv('MYSQLPORT', '41389'))
+    'port': int(os.getenv('MYSQLPORT', '3306'))
 }
 
 @app.route('/api/materiales_educativos', methods=['POST'])
@@ -91,9 +88,7 @@ def obtener_materiales():
         return jsonify({'error': f'Error al leer la base de datos: {str(e)}'}), 500
 
 
-@app.route('/abrir_archivo/<nombre_archivo>')
-def abrir_archivo(nombre_archivo):
-    return send_from_directory(CARPETA_DESTINO, nombre_archivo)
+
 
 
 if __name__ == '__main__':
