@@ -15,7 +15,7 @@ CORS(app)
 
 # Configuración de Cloudinary utilizando variables de entorno
 cloudinary.config(
-    cloud_name="root",
+    cloud_name="dvocywp3g",
     api_key="697285456284546",
     api_secret="CBnGpPh1slkKmyZwroGodH3PKUY"
 )
