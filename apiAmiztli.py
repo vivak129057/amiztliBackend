@@ -5,26 +5,31 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import mysql.connector
 from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
+
+# Carga las variables del archivo .env (útil para pruebas en tu computadora local)
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# 1. Configuración directa con tus credenciales (sin usar .env temporalmente)
-# ¡Coloca tus datos reales entre las comillas!
+# Configuración de Cloudinary utilizando variables de entorno
 cloudinary.config(
-    cloud_name="dvocywp3g",
-    api_key="697285456284546",
-    api_secret="CBnGpPh1slkKmyZwroGodH3PKUY"  # Reemplaza con tu API Secret real
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
 
 CARPETA_DESTINO = 'uploads'
 os.makedirs(CARPETA_DESTINO, exist_ok=True)
 
+# Configuración dinámica para conectarse a Railway
 db_config = {
-    'host': '127.0.0.1',
-    'user': 'root',
-    'password': '220682', # Tu contraseña actual
-    'database': 'amiztli'
+    'host': os.getenv('MYSQLHOST'),
+    'user': os.getenv('MYSQLUSER', 'root'),
+    'password': os.getenv('MYSQLPASSWORD'),
+    'database': os.getenv('MYSQLDATABASE', 'railway'),
+    'port': int(os.getenv('MYSQLPORT', '41389'))
 }
 
 @app.route('/api/materiales_educativos', methods=['POST'])
@@ -48,7 +53,7 @@ def subir_material():
         # 2. Obtenemos el nombre original del archivo
         nombre_archivo = archivo.filename
 
-        # 3. Nos conectamos a la base de datos
+        # 3. Nos conectamos a la base de datos de Railway
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
 
@@ -56,7 +61,6 @@ def subir_material():
             INSERT INTO materiales_educativos (titulo_recurso, descripcion, categoria, tipo_archivo, enlace_descarga)
             VALUES (%s, %s, %s, %s, %s)
         """
-        # Guardamos el nombre en tipo_archivo y la URL en enlace_descarga
         valores = (titulo, descripcion, condicion, nombre_archivo, url_archivo)
 
         cursor.execute(sql, valores)
@@ -93,4 +97,5 @@ def abrir_archivo(nombre_archivo):
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    port = int(os.getenv('PORT', 5000))
+    app.run(port=port, debug=True)
