@@ -87,7 +87,53 @@ def obtener_materiales():
     except Exception as e:
         return jsonify({'error': f'Error al leer la base de datos: {str(e)}'}), 500
 
+@app.route('/api/instituciones', methods=['POST'])
+def subir_institucion():
+    try:
+        nombre = request.form.get('nombre_institucion')
+        direccion = request.form.get('direccion', '')
+        telefono = request.form.get('telefono', '')
+        correo_electronico = request.form.get('correo_electronico', '')
+        descripcion = request.form.get('descripcion', '')
 
+        if not nombre:
+            return jsonify({'error': 'El nombre de la institución es obligatorio'}), 400
+
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        sql = """
+            INSERT INTO instituciones (nombre_institucion, direccion, telefono, correo_electronico, descripcion)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        valores = (nombre, direccion, telefono, correo_electronico, descripcion)
+
+        cursor.execute(sql, valores)
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({'mensaje': '¡Institución registrada exitosamente!'}), 201
+
+    except Exception as e:
+        return jsonify({'error': f'Error en el servidor: {str(e)}'}), 500
+
+@app.route('/api/instituciones', methods=['GET'])
+def obtener_instituciones():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True)
+        
+        cursor.execute("SELECT * FROM instituciones ORDER BY id_institucion DESC")
+        instituciones = cursor.fetchall()
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify(instituciones), 200
+    except Exception as e:
+        return jsonify({'error': f'Error al leer la base de datos: {str(e)}'}), 500
 
 
 
