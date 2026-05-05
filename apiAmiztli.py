@@ -94,7 +94,7 @@ def subir_institucion():
         direccion = request.form.get('direccion', '')
         telefono = request.form.get('telefono', '')
         correo_electronico = request.form.get('correo_electronico', '')
-        descripcion = request.form.get('descripcion', '')
+        descripcion = request.form.get('Descripcion', '')
 
         if not nombre:
             return jsonify({'error': 'El nombre de la institución es obligatorio'}), 400
@@ -103,7 +103,7 @@ def subir_institucion():
         cursor = conn.cursor()
 
         sql = """
-            INSERT INTO instituciones (nombre_institucion, direccion, telefono, correo_electronico, descripcion)
+            INSERT INTO directorio_instituciones (nombre_institucion, direccion, telefono, correo_electronico, Descripcion)
             VALUES (%s, %s, %s, %s, %s)
         """
         valores = (nombre, direccion, telefono, correo_electronico, descripcion)
@@ -125,7 +125,7 @@ def obtener_instituciones():
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor(dictionary=True)
         
-        cursor.execute("SELECT * FROM instituciones ORDER BY id_institucion DESC")
+        cursor.execute("SELECT * FROM directorio_instituciones ORDER BY id_institucion DESC")
         instituciones = cursor.fetchall()
         
         cursor.close()
