@@ -220,7 +220,7 @@ def registrar_especialista():
         cursor = conn.cursor()
 
         sql = """
-            INSERT INTO directorio_especialistas (
+            INSERT INTO datos_especialistas (
                 nombre, especialidad, telefono, correo_electronico, 
                 ubicacion_consultorio, Descripcion, trastornos_experiencia, 
                 apellido_paterno -- Agregar según la lógica que tengas en tu BD
@@ -254,7 +254,7 @@ def registrar_institucion():
         cursor = conn.cursor()
 
         sql = """
-            INSERT INTO directorio_instituciones (
+            INSERT INTO datos_instituciones (
                 nombre_institucion, tipo, direccion, telefono, 
                 correo_electronico, Descripcion
             )
