@@ -90,11 +90,11 @@ def obtener_materiales():
 @app.route('/api/instituciones', methods=['POST'])
 def subir_institucion():
     try:
-        nombre = request.form.get('nombre_institucion')
-        direccion = request.form.get('direccion', '')
+        nombre = request.form.get('nombre')
+        ubicacion = request.form.get('ubicacion', '')
         telefono = request.form.get('telefono', '')
         correo_electronico = request.form.get('correo_electronico', '')
-        descripcion = request.form.get('Descripcion', '')
+        Descripcion = request.form.get('Descripcion', '')
 
         if not nombre:
             return jsonify({'error': 'El nombre de la institución es obligatorio'}), 400
@@ -103,10 +103,10 @@ def subir_institucion():
         cursor = conn.cursor()
 
         sql = """
-            INSERT INTO directorio_instituciones (nombre_institucion, direccion, telefono, correo_electronico, Descripcion)
+            INSERT INTO directorio_instituciones (nombre, ubicacion, telefono, correo_electronico, Descripcion)
             VALUES (%s, %s, %s, %s, %s)
         """
-        valores = (nombre, direccion, telefono, correo_electronico, descripcion)
+        valores = (nombre, ubicacion, telefono, correo_electronico, Descripcion)
 
         cursor.execute(sql, valores)
         conn.commit()
