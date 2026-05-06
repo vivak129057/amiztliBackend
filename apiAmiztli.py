@@ -203,6 +203,106 @@ def obtener_especialistas():
         return jsonify({'error': f'Error al leer la base de datos: {str(e)}'}), 500
 
 
+@app.route('/api/registro/especialista', methods=['POST'])
+def registrar_especialista():
+    try:
+        nombre = request.form.get('nombre')
+        especialidad = request.form.get('especialidad')
+        cedula = request.form.get('cedula')
+        ciudad = request.form.get('ciudad')
+        telefono = request.form.get('telefono')
+        direccion = request.form.get('direccion', '')
+        descripcion = request.form.get('descripcion', '')
+        correo = request.form.get('correo')
+        password = request.form.get('password')
+
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        sql = """
+            INSERT INTO directorio_especialistas (
+                nombre, especialidad, telefono, correo_electronico, 
+                ubicacion_consultorio, Descripcion, trastornos_experiencia, 
+                apellido_paterno -- Agregar según la lógica que tengas en tu BD
+            ) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        # Nota: Adapta los valores según la estructura de tu BD real.
+        cursor.execute(sql, (nombre, especialidad, telefono, correo, ciudad, descripcion, "", ""))
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+
+        return jsonify({'mensaje': 'Especialista registrado exitosamente'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/registro/institucion', methods=['POST'])
+def registrar_institucion():
+    try:
+        nombre = request.form.get('nombre')
+        cct = request.form.get('cct')
+        tipo = request.form.get('tipo')
+        telefono = request.form.get('telefono')
+        direccion = request.form.get('direccion')
+        servicios = request.form.get('servicios')
+        correo = request.form.get('correo')
+        password = request.form.get('password')
+
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        sql = """
+            INSERT INTO directorio_instituciones (
+                nombre_institucion, tipo, direccion, telefono, 
+                correo_electronico, Descripcion
+            )
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(sql, (nombre, tipo, direccion, telefono, correo, servicios))
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({'mensaje': 'Institución registrada exitosamente'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/registro/maestro', methods=['POST'])
+def registrar_maestro():
+    try:
+        nombre = request.form.get('nombre')
+        nivel_educativo = request.form.get('nivel_educativo')
+        estado = request.form.get('estado')
+        escuela = request.form.get('escuela')
+        intereses = request.form.get('intereses')
+        correo = request.form.get('correo')
+        password = request.form.get('password')
+
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        sql = """
+            INSERT INTO datos_maestro (
+                id_usuario, grado_estudios, institucion_afiliada, 
+                materias_especialidad, anios_experiencia
+            )
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        # Se guarda el maestro. Ajusta si deseas crear el registro previo de usuario.
+        cursor.execute(sql, (1, nivel_educativo, escuela, intereses, 0))
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+
+        return jsonify({'mensaje': 'Maestro registrado exitosamente'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     app.run(port=port, debug=True)
