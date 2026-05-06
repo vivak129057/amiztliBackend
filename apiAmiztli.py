@@ -125,7 +125,7 @@ def obtener_instituciones():
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor(dictionary=True)
         
-        cursor.execute("SELECT * FROM directorio_instituciones ORDER BY id_institucion DESC")
+        cursor.execute("SELECT * FROM directorio_instituciones ORDER BY id_directorio_instituciones DESC")
         instituciones = cursor.fetchall()
         
         cursor.close()
