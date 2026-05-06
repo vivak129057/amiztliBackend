@@ -137,6 +137,71 @@ def obtener_instituciones():
         return jsonify({'error': f'Error al leer la base de datos: {str(e)}'}), 500
 
 
+@app.route('/api/especialistas', methods=['POST'])
+def subir_especialista():
+    try:
+        # Recibimos los datos enviados desde el formulario en JavaScript
+        nombre = request.form.get('nombre')
+        apellido_paterno = request.form.get('apellido_paterno', '')
+        apellido_materno = request.form.get('apellido_materno')
+        especialidad = request.form.get('especialidad', '')
+        telefono = request.form.get('telefono', '')
+        correo_electronico = request.form.get('correo_electronico', '')
+        ubicacion_consultorio = request.form.get('ubicacion_consultorio', '')
+        descripcion = request.form.get('Descripcion', '')
+        experiencia_trastornos = request.form.get('experiencia_trastornos', '')
+
+        # Validamos que los campos requeridos estén presentes
+        if not nombre or not apellido_paterno or not especialidad:
+            return jsonify({'error': 'Faltan campos obligatorios'}), 400
+
+        # Nos conectamos a la base de datos
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        sql = """
+            INSERT INTO directorio_especialistas (
+                nombre, apellido_paterno, apellido_materno, especialidad, 
+                telefono, correo_electronico, ubicacion_consultorio, 
+                Descripcion, experiencia_trastornos
+            ) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        valores = (
+            nombre, apellido_paterno, apellido_materno, especialidad, 
+            telefono, correo_electronico, ubicacion_consultorio, 
+            descripcion, experiencia_trastornos
+        )
+
+        cursor.execute(sql, valores)
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({'mensaje': '¡Especialista registrado exitosamente!'}), 201
+
+    except Exception as e:
+        return jsonify({'error': f'Error en el servidor: {str(e)}'}), 500
+
+
+@app.route('/api/especialistas', methods=['GET'])
+def obtener_especialistas():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor(dictionary=True)
+        
+        # Leemos los datos de la base de datos
+        cursor.execute("SELECT * FROM directorio_especialistas ORDER BY id_directorio_especialistas DESC")
+        especialistas = cursor.fetchall()
+        
+        cursor.close()
+        conn.close()
+        
+        return jsonify(especialistas), 200
+    except Exception as e:
+        return jsonify({'error': f'Error al leer la base de datos: {str(e)}'}), 500
+
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
