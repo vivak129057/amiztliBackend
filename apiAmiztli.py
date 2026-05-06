@@ -95,6 +95,7 @@ def subir_institucion():
         telefono = request.form.get('telefono', '')
         correo_electronico = request.form.get('correo_electronico', '')
         Descripcion = request.form.get('Descripcion', '')
+        tipo = request.form.get('tipo', '')
 
         if not nombre:
             return jsonify({'error': 'El nombre de la institución es obligatorio'}), 400
@@ -103,10 +104,10 @@ def subir_institucion():
         cursor = conn.cursor()
 
         sql = """
-            INSERT INTO directorio_instituciones (nombre, ubicacion, telefono, correo_electronico, Descripcion)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO directorio_instituciones (nombre, ubicacion, tipo, telefono, correo_electronico, Descripcion)
+            VALUES (%s, %s, %s, %s, %s, %s)
         """
-        valores = (nombre, ubicacion, telefono, correo_electronico, Descripcion)
+        valores = (nombre, ubicacion, tipo, telefono, correo_electronico, Descripcion)
 
         cursor.execute(sql, valores)
         conn.commit()
